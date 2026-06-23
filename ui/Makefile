@@ -139,7 +139,7 @@ size: $(BIN)
 
 sim: CFLAGS += -DSIMULATOR -Isrc -I/opt/homebrew/include -I/opt/homebrew/include/SDL2
 sim: LDFLAGS += -L/opt/homebrew/lib -lSDL2 -lsqlcipher -lcrypto
-sim: SRCS_SIM = $(filter-out $(SRCDIR)/fb.c $(SRCDIR)/keypad.c $(SRCDIR)/telephony.c, $(SRCS)) \
+sim: SRCS_SIM = $(filter-out $(SRCDIR)/keypad.c $(SRCDIR)/telephony.c, $(SRCS)) \
                 $(SRCDIR)/fb_sim.c $(SRCDIR)/keypad_sim.c $(SRCDIR)/telephony_stub.c
 sim:
 	$(CC) $(CFLAGS) $(SRCS_SIM) -o stealth-sim $(LDFLAGS)

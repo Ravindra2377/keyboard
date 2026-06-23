@@ -19,13 +19,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef SIMULATOR
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include <linux/fb.h>
+#endif
 
 /* ─── Framebuffer Init/Destroy ───────────────────────────────────────────── */
+
+#ifndef SIMULATOR
 
 int fb_init(framebuffer_t *fb, const char *device)
 {
@@ -95,6 +99,8 @@ void fb_destroy(framebuffer_t *fb)
     memset(fb, 0, sizeof(*fb));
     fb->fd = -1;
 }
+
+#endif
 
 /* ─── Color Helpers ──────────────────────────────────────────────────────── */
 
@@ -274,6 +280,7 @@ void fb_gradient_v(framebuffer_t *fb, int x, int y, int w, int h,
     }
 }
 
+#ifndef SIMULATOR
 void fb_flip(framebuffer_t *fb)
 {
     /* For single-buffer setup, no-op (writes go directly to display).
@@ -284,3 +291,4 @@ void fb_flip(framebuffer_t *fb)
         ioctl(fb->fd, FBIOPAN_DISPLAY, &vinfo);
     }
 }
+#endif
