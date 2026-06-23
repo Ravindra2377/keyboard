@@ -28,7 +28,7 @@ static struct {
 
 /* ─── Screen Registration (forward declarations) ─────────────────────────── */
 
-/* These are defined in screens/*.c */
+/* These are defined in screens/ */
 extern screen_t *screen_idle_create(framebuffer_t *fb);
 extern screen_t *screen_dialer_create(framebuffer_t *fb);
 extern screen_t *screen_home_create(framebuffer_t *fb);

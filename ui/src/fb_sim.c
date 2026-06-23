@@ -11,42 +11,46 @@
 static SDL_Window   *g_window   = NULL;
 static SDL_Renderer *g_renderer = NULL;
 static SDL_Texture  *g_texture  = NULL;
-static uint32_t     *g_pixels   = NULL;
 
-/* Called by main.c instead of fb_open() */
-int fb_open(const char *path) {
-    (void)path;
-    SDL_Init(SDL_INIT_VIDEO);
+/* Called by main.c instead of linux hardware init */
+int fb_init(framebuffer_t *fb, const char *device) {
+    (void)device;
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) return -1;
+    
     g_window = SDL_CreateWindow("StealthOS Simulator",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         SIM_WIDTH * 2, SIM_HEIGHT * 2, 0);  /* 2× scale */
-    g_renderer = SDL_CreateRenderer(g_window, -1,
-        SDL_RENDERER_ACCELERATED);
+    if (!g_window) return -1;
+    
+    g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
+    if (!g_renderer) return -1;
+    
     SDL_RenderSetLogicalSize(g_renderer, SIM_WIDTH, SIM_HEIGHT);
     g_texture = SDL_CreateTexture(g_renderer,
         SDL_PIXELFORMAT_ARGB8888,
         SDL_TEXTUREACCESS_STREAMING,
         SIM_WIDTH, SIM_HEIGHT);
-    g_pixels = calloc(SIM_WIDTH * SIM_HEIGHT, sizeof(uint32_t));
+    
+    fb->width = SIM_WIDTH;
+    fb->height = SIM_HEIGHT;
+    fb->bpp = 32;
+    fb->stride = SIM_WIDTH * sizeof(uint32_t);
+    fb->pixels = calloc(SIM_WIDTH * SIM_HEIGHT, sizeof(uint32_t));
+    fb->fd = -1;
+    
     return 0;
 }
 
-/* Your fb.c calls this to get the pixel buffer */
-uint32_t *fb_pixels(void) { return g_pixels; }
-int fb_width(void)        { return SIM_WIDTH; }
-int fb_height(void)       { return SIM_HEIGHT; }
-
 /* Call this once per frame in your main loop */
-void fb_flush(void) {
-    SDL_UpdateTexture(g_texture, NULL, g_pixels,
-                      SIM_WIDTH * sizeof(uint32_t));
+void fb_flip(framebuffer_t *fb) {
+    SDL_UpdateTexture(g_texture, NULL, fb->pixels, fb->stride);
     SDL_RenderClear(g_renderer);
     SDL_RenderCopy(g_renderer, g_texture, NULL, NULL);
     SDL_RenderPresent(g_renderer);
 }
 
-void fb_close(void) {
-    free(g_pixels);
+void fb_destroy(framebuffer_t *fb) {
+    free(fb->pixels);
     SDL_DestroyTexture(g_texture);
     SDL_DestroyRenderer(g_renderer);
     SDL_DestroyWindow(g_window);
