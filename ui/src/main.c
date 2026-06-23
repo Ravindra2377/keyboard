@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
     telephony_init();
 
     fprintf(stderr, "[main] Initializing font engine\n");
-    if (font_init("src/terminus.ttf") != 0) font_init("terminus.ttf");
+    font_init("src/terminus.ttf");
 
     fprintf(stderr, "[main] Initializing encrypted storage\n");
     uint8_t key32[32] = {0}; /* TODO: Get from Argon2id initramfs */

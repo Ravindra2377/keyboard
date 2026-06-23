@@ -139,6 +139,7 @@ static void idle_render(void *state)
 static bool idle_on_key(void *state, const key_event_t *event)
 {
     idle_state_t *s = (idle_state_t *)state;
+    (void)s;
 
     if (event->type != KEY_EVENT_PRESS) return false;
 
