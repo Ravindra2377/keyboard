@@ -44,8 +44,8 @@ static keypad_key_t sdl_to_stealth(SDL_Keycode sym) {
         case SDLK_DOWN:  return KEY_DOWN;
         case SDLK_LEFT:  return KEY_LEFT;
         case SDLK_RIGHT: return KEY_RIGHT;
-        case SDLK_F1:    return KEY_SOFT_LEFT;
-        case SDLK_F2:    return KEY_SOFT_RIGHT;
+        case SDLK_q:     return KEY_SOFT_LEFT;
+        case SDLK_w:     return KEY_SOFT_RIGHT;
         case SDLK_SPACE: return KEY_CENTER;
         default: return KEY_NONE;
     }
